@@ -1,24 +1,20 @@
+// Exports files as `file-name.artboard-number.artboard-name.png`
+
 var destFolder = Folder.selectDialog('Select folder for PNG files.', '~');
-
 var docRef = app.activeDocument;
-    
-var num_artboards = docRef.artboards.length;
+var numArtboards = docRef.artboards.length;
 
-var date = new Date();
+// Add artboard number in the filename
+var ArtboardNum = 0;
 
-date = date.valueOf();
+for (var i = 0; i < numArtboards; i++ ) {
+  ArtboardNum = i+1;
+  var destFile = new File(destFolder + "/" + docRef.name.replace(/.[^.]+$/,'') + "." + (ArtboardNum < 10 ? '0' + ArtboardNum : ArtboardNum) + "." + docRef.artboards[i].name + ".png");    
+  var options = new ExportOptionsPNG24();
+  options.artBoardClipping = true;
+  options.matte = false;
 
-var j = 0;
+  docRef.artboards.setActiveArtboardIndex(i);
 
-for (var i = 0; i < num_artboards; i++ )
-{
-    j = i+1;
-    var destFile = new File(destFolder + "/" + docRef.name.replace(/.[^.]+$/,'') + "." + (j<10 ? '0'+j : j) + "." + docRef.artboards[i].name + ".png");    
-    var options = new ExportOptionsPNG24();
-    options.artBoardClipping = true;
-    options.matte = false;
-        
-    docRef.artboards.setActiveArtboardIndex(i);
-    
-    docRef.exportFile (destFile, ExportType.PNG24, options);    
+  docRef.exportFile (destFile, ExportType.PNG24, options);    
 }
